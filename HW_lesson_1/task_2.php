@@ -56,5 +56,8 @@ class Db
 
 $db = new Db();
 
+
+
+
 echo $db->table('product')->where('name', 'Alex')->where('session', 123)->where(id, 5)->get();
 //что должно вывести SELECT * FROM product WHERE name = Alex AND session = 123 AND id = 5
