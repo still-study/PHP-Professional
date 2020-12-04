@@ -68,12 +68,13 @@ final class Db
     {
         $stmt = $this->query($sql, $params);
         $stmt->setFetchMode(\PDO::FETCH_CLASS, $class);
+        //TODO
         return $stmt->fetch();
     }
 
 
 
-    public function execute($sql, $params)
+    public function execute($sql, $params = [])
     {
         return $this->query($sql, $params)->rowCount();
     }

@@ -37,7 +37,7 @@ abstract class Model implements IModel
         foreach ($this as $key => $value){
             if ($key == 'id') continue;
             array_push($field, $key);
-            array_push($val, str_replace($key, '\':' . $key . '\'', $key));
+            array_push($val, str_replace($key, ':' . $key, $key));
             $params[$key] = $value;
         }
 
@@ -46,11 +46,7 @@ abstract class Model implements IModel
 
         $sql = "INSERT INTO {$this->getTableName()} ({$field}) VALUES ({$val})";
         Db::getInstance()->execute($sql, $params);
-
-
-
-        //TODO $this->id = lastInsertId();
-
+        $this->id = Db::getInstance()->lastInsertId();
     }
 
     public function update()
@@ -60,10 +56,10 @@ abstract class Model implements IModel
 
     }
 
-    public function delete($id)
+    public function delete()
     {
-        $sql = "DELETE * FROM {$this->getTableName()} WHERE id = {$id}";
-        return Db::getInstance()->execute($sql);
+        $sql = "DELETE FROM {$this->getTableName()} WHERE id = :id";
+        Db::getInstance()->execute($sql, ["id" => $this->id]);
     }
 
     abstract protected function getTableName();

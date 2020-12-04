@@ -12,5 +12,6 @@ spl_autoload_register([new Autoload(), 'loadClass']);
 //CREATE
 $product = new Product("Чай", "Цейлонский", 123);
 $product->insert();
+$product->delete();
 
 
