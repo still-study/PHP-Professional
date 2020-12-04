@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 29 2020 г., 21:09
--- Версия сервера: 8.0.19
--- Версия PHP: 7.4.5
+-- Время создания: Дек 04 2020 г., 22:12
+-- Версия сервера: 10.3.22-MariaDB
+-- Версия PHP: 7.1.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,10 +28,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `products` (
-  `id` int NOT NULL,
-  `name` text NOT NULL,
-  `description` text NOT NULL,
-  `price` int NOT NULL
+  `id` int(11) NOT NULL,
+  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -41,7 +41,9 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
 (1, 'Чай', 'Цейлонский', 22),
 (2, 'Пицца', 'Пепперони', 43),
-(3, 'Одежда', 'Брендовая', 34);
+(3, 'Одежда', 'Брендовая', 34),
+(25, 'Чай', 'Цейлонский', 123),
+(47, 'Чай', 'Цейлонский', 123);
 
 -- --------------------------------------------------------
 
@@ -50,9 +52,9 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
 --
 
 CREATE TABLE `users` (
-  `id` int NOT NULL,
-  `login` text NOT NULL,
-  `pass` text NOT NULL
+  `id` int(11) NOT NULL,
+  `login` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pass` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -86,13 +88,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
