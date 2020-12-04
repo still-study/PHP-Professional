@@ -6,15 +6,6 @@ use app\interfaces\IModel;
 use app\engine\Db;
 abstract class Model implements IModel
 {
-    protected $tableName = "";
-
-    protected $db;
-
-    public function __construct(Db $db)
-    {
-        $this->db = $db;
-    }
-
     public function __set($name, $value)
     {
         return $this->$name = $value;
@@ -27,26 +18,52 @@ abstract class Model implements IModel
 
     public function getOne($id)
     {
-        $sql = "SELECT FROM {$this->getTableName()} WHERE id = {$id}";
-        return $this->db->queryOne($sql);
+        $sql = "SELECT * FROM {$this->getTableName()} WHERE id = :id";
+        return Db::getInstance()->queryOne($sql, ["id" => $id], static::class);
     }
 
     public function getAll()
     {
-        $sql = "SELECT FROM {$this->getTableName()}";
-        return $this->db->queryAll($sql);
+        $sql = "SELECT * FROM {$this->getTableName()}";
+        return Db::getInstance()->queryAll($sql);
     }
 
     public function insert()
     {
-        $sql = "INSERT ...";
-        $this->db->query($sql);
+        $field = [];
+        $val = [];
+        $params = [];
+
+        foreach ($this as $key => $value){
+            if ($key == 'id') continue;
+            array_push($field, $key);
+            array_push($val, str_replace($key, '\':' . $key . '\'', $key));
+            $params[$key] = $value;
+        }
+
+        $val = implode(', ', $val);
+        $field = implode(', ', $field);
+
+        $sql = "INSERT INTO {$this->getTableName()} ({$field}) VALUES ({$val})";
+        Db::getInstance()->execute($sql, $params);
+
+
+
+        //TODO $this->id = lastInsertId();
+
+    }
+
+    public function update()
+    {
+        $sql = "UPDATE ...";
+        Db::getInstance()->execute($sql);
+
     }
 
     public function delete($id)
     {
-        $sql = "DELETE FROM {$this->getTableName()} WHERE id = {$id}";
-        return $this->db->query($sql);
+        $sql = "DELETE * FROM {$this->getTableName()} WHERE id = {$id}";
+        return Db::getInstance()->execute($sql);
     }
 
     abstract protected function getTableName();

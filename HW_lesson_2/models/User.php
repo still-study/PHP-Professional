@@ -8,9 +8,14 @@ class User extends Model
     public $login;
     public $pass;
 
+    public function __construct($login = null, $pass = null)
+    {
+        $this->login = $login;
+        $this->pass = $pass;
+    }
 
     protected function getTableName()
     {
-        return "User";
+        return "users";
     }
 }
