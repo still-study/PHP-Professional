@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-class User extends Model
+class User extends DbModel
 {
     public $id;
     public $login;
@@ -14,7 +14,7 @@ class User extends Model
         $this->pass = $pass;
     }
 
-    protected function getTableName()
+    protected static function getTableName()
     {
         return "users";
     }

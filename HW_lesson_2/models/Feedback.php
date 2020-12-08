@@ -4,17 +4,15 @@
 namespace app\models;
 
 
-class Feedback extends Model
+class Feedback extends DbModel
 {
 
     public $id;
     public $userName;
     public $text;
-    public $dateFeed;
-    public $goodId;
 
-    protected function getTableName()
+    protected static function getTableName()
     {
-        return "Feedback";
+        return "feedback";
     }
 }

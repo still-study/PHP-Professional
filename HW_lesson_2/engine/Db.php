@@ -58,16 +58,16 @@ final class Db
 
     public function lastInsertId()
     {
-        $stmt = $this->getConnection();
-        return $stmt->lastInsertId();
+        return $this->connection->lastInsertId();
+
     }
 
 
 
-    public function queryObject($sql, $params = [], $class)
+    public function queryObject($sql, $params, $class)
     {
         $stmt = $this->query($sql, $params);
-        $stmt->setFetchMode(\PDO::FETCH_CLASS, $class);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class);
         //TODO
         return $stmt->fetch();
     }

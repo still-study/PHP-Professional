@@ -4,7 +4,7 @@
 namespace app\models;
 
 
-class Order extends Model
+class Order extends DbModel
 {
 
     public $id;
@@ -18,7 +18,7 @@ class Order extends Model
     public $dateOrder;
     public $totalPrice;
 
-    protected function getTableName()
+    protected static function getTableName()
     {
         return "Order";
     }
