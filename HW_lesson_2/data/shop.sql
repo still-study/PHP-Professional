@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 04 2020 г., 22:12
+-- Время создания: Дек 08 2020 г., 13:58
 -- Версия сервера: 10.3.22-MariaDB
 -- Версия PHP: 7.1.33
 
@@ -20,6 +20,25 @@ SET time_zone = "+00:00";
 --
 -- База данных: `shop`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `id` int(10) NOT NULL,
+  `userName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `text` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `feedback`
+--
+
+INSERT INTO `feedback` (`id`, `userName`, `text`) VALUES
+(1, 'Admin', 'Hello World');
 
 -- --------------------------------------------------------
 
@@ -42,8 +61,8 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
 (1, 'Чай', 'Цейлонский', 22),
 (2, 'Пицца', 'Пепперони', 43),
 (3, 'Одежда', 'Брендовая', 34),
-(25, 'Чай', 'Цейлонский', 123),
-(47, 'Чай', 'Цейлонский', 123);
+(52, 'Бананы', 'Эквадорские', 150),
+(53, 'Кофе', 'Колумбийский', 500);
 
 -- --------------------------------------------------------
 
@@ -69,6 +88,12 @@ INSERT INTO `users` (`id`, `login`, `pass`) VALUES
 --
 
 --
+-- Индексы таблицы `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `products`
 --
 ALTER TABLE `products`
@@ -85,16 +110,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
