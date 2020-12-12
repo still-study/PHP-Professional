@@ -15,6 +15,13 @@ abstract class DbModel extends Model
         return Db::getInstance()->queryObject($sql, [":id" => $id], static::class);
     }
 
+    public static function getLimit($page)
+    {
+        $tableName = static::getTableName();
+        $sql = "SELECT * FROM {$tableName} LIMIT ?";
+        return Db::getInstance()->queryLimit($sql, $page);
+    }
+
     public static function getAll()
     {
         $tableName = static::getTableName();
@@ -22,7 +29,21 @@ abstract class DbModel extends Model
         return Db::getInstance()->queryAll($sql);
     }
 
-    public function insert()
+    public static function getWhere($name, $value)
+    {
+        $tableName = static::getTableName();
+        $sql = "SELECT * FROM {$tableName} WHERE `$name` = :{$name}";
+        return Db::getInstance()->execute($sql, [":{$name}" => $value]);
+    }
+
+    public static function getSumWhere($name)
+    {
+        $tableName = static::getTableName();
+        $sql = "SELECT SUM(price) FROM {$tableName} WHERE name = :name";
+        return Db::getInstance()->execute($sql, [":name" => $name]);
+    }
+
+    protected function insert()
     {
         $tableName = static::getTableName();
         $fields = [];
@@ -30,7 +51,7 @@ abstract class DbModel extends Model
 
         foreach ($this->props as $key => $value){
 
-            $params[":{$key}"] = $this->{$key};
+            $params[":{$key}"] = $this->$key;
             $fields[] = "`$key`";
 
         }
@@ -45,24 +66,23 @@ abstract class DbModel extends Model
         return $this;
     }
 
-    public function update()
+    protected function update()
     {
         $tableName = static::getTableName();
         $params = [":id" => $this->id];
         $fields = [];
 
         foreach ($this->props as $key => $value){
+            if (!$value) continue;
             $params[":{$key}"] = $this->{$key};
-            array_push($fields, "`$key`" . ' = ' . ":{$key}");
-            if ($value)
-                $this->props[$key] = false;
+            $fields[] .= "`{$key}` = :{$key}";
+            $this->props[$key] = false;
         }
 
         $val = implode(', ', $fields);
 
         $sql = "UPDATE {$tableName} SET {$val} WHERE id = :id";
         Db::getInstance()->execute($sql, $params);
-
     }
 
     public function delete()
