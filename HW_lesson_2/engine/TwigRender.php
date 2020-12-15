@@ -9,12 +9,18 @@ use app\interfaces\IRenderer;
 
 class TwigRender implements IRenderer
 {
+    protected $twig;
+
+    public function __construct()
+
+    {
+        $loader = new \Twig\Loader\FilesystemLoader('../TwigTemplates');
+        $this->twig = new \Twig\Environment($loader);
+    }
 
 
     public function renderTemplate($template, $params = [])
     {
-        $loader = new \Twig\Loader\FilesystemLoader('../TwigTemplates');
-        $twig = new \Twig\Environment($loader);
-        return $twig->render($template . '.twig', $params);
+        return $this->twig->render($template . '.twig', $params);
     }
 }

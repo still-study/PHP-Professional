@@ -5,6 +5,7 @@ namespace app\controllers;
 
 
 
+use app\engine\Request;
 use app\models\Product;
 
 class ProductController extends Controller
@@ -17,7 +18,7 @@ class ProductController extends Controller
 
     public function actionCatalog()
     {
-        $page = (int)$_GET['page'];
+        $page = (new Request())->getParams()['page'];
         $catalog = Product::getLimit(($page + 1) * PRODUCT_PER_PAGE);
 
         echo $this->render('catalog', [
@@ -28,7 +29,8 @@ class ProductController extends Controller
 
     public function actionCard()
     {
-        $id = (int)$_GET['id'];
+        $id = (new Request())->getParams()['id'];
+
         echo $this->render('card', [
             'product' => Product::getOne($id)
         ]);

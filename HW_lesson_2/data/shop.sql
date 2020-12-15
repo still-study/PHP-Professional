@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 08 2020 г., 13:58
+-- Время создания: Дек 15 2020 г., 15:13
 -- Версия сервера: 10.3.22-MariaDB
--- Версия PHP: 7.1.33
+-- Версия PHP: 7.4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,27 @@ SET time_zone = "+00:00";
 --
 -- База данных: `shop`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `basket`
+--
+
+CREATE TABLE `basket` (
+  `id` int(11) NOT NULL,
+  `session_id` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `basket`
+--
+
+INSERT INTO `basket` (`id`, `session_id`, `product_id`) VALUES
+(1, '111', 1),
+(2, '111', 2),
+(3, '222', 1);
 
 -- --------------------------------------------------------
 
@@ -61,8 +82,7 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
 (1, 'Чай', 'Цейлонский', 22),
 (2, 'Пицца', 'Пепперони', 43),
 (3, 'Одежда', 'Брендовая', 34),
-(52, 'Бананы', 'Эквадорские', 150),
-(53, 'Кофе', 'Колумбийский', 500);
+(53, 'Чай', 'Колумбийский', 300);
 
 -- --------------------------------------------------------
 
@@ -81,11 +101,18 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `pass`) VALUES
-(1, 'admin', '123');
+(1, 'admin', '$2y$10$M18xmjviquxTSe/75yhKZ.DHD188KcQdgUuXRmJxBexXE7Cj3xbC.'),
+(3, 'Bob', '$2y$10$b59V4Xk8We7LGrCsoTQzIOjp4A5RWwfupfADJ/2wyoSRjm4mx/5Cy');
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `basket`
+--
+ALTER TABLE `basket`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `feedback`
@@ -110,6 +137,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `basket`
+--
+ALTER TABLE `basket`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
 -- AUTO_INCREMENT для таблицы `feedback`
 --
 ALTER TABLE `feedback`
@@ -125,7 +158,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

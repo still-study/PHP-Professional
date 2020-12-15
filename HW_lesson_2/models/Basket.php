@@ -4,6 +4,8 @@
 namespace app\models;
 
 
+use app\engine\Db;
+
 class Basket extends DbModel
 {
 
@@ -11,11 +13,23 @@ class Basket extends DbModel
     protected $session_id;
     protected $product_id;
 
-    public function getBasket($session_id)
+    protected $props = [
+        'session_id' => false,
+        'product_id' => false
+    ];
+
+    public function __construct($session_id = null, $product_id = null)
+    {
+        $this->session_id = $session_id;
+        $this->product_id = $product_id;
+    }
+
+
+    public static function getBasket($session_id)
     {
         $sql = "SELECT basket.id basket_id, products.id prod_id, products.name, products.description, products.price
-FROM `basket`,`products` WHERE `session_id` = '111' AND basket.product_id = products.id";
-        return [];
+FROM `basket`,`products` WHERE `session_id` = :session AND basket.product_id = products.id";
+        return Db::getInstance()->queryAll($sql, ['session' => $session_id]);
     }
 
     protected static function getTableName()
