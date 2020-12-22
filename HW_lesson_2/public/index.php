@@ -1,6 +1,4 @@
 <?php
-//(new Session())->sessionStart();
-session_start();
 
 use app\models\{Product, User, Basket, Feedback};
 use app\engine\Autoload;
@@ -8,13 +6,17 @@ use app\engine\Render;
 use app\engine\TwigRender;
 use app\engine\Request;
 use app\engine\Session;
+
+require_once '../vendor/autoload.php';
 include "../config/config.php";
 include "../engine/Autoload.php";
-
 spl_autoload_register([new Autoload(), 'loadClass']);
-require_once '../vendor/autoload.php';
+
+$session = new Session();
+$session->sessionStart();
 
 $request = new Request();
+
 
 $controllerName = $request->getControllerName() ?: 'product';
 $actionName = $request->getActionName();
