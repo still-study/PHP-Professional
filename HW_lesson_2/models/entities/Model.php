@@ -1,10 +1,10 @@
 <?php
 
 
-namespace app\models;
+namespace app\models\entities;
 use app\interfaces\IModel;
 
-abstract class Model implements IModel
+abstract class Model
 {
     public function __set($name, $value)
     {
@@ -27,5 +27,4 @@ abstract class Model implements IModel
         return isset($this->$name);
     }
 
-    abstract protected static function getTableName();
 }

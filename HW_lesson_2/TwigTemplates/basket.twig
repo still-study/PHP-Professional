@@ -10,7 +10,7 @@
             <p>{{ item.description }}</p>
             <p>{{ item.price }}</p>
 
-            <button class="delete">Удалить</button>
+            <button data-id="{{ item.basket_id }}" class="delete">Удалить</button>
             <hr>
         </div>
 
@@ -22,8 +22,7 @@
     let buttons = document.querySelectorAll('.delete');
     buttons.forEach((elem) => {
         elem.addEventListener('click', () => {
-            let id = elem.parentElement.id;
-
+            let id = elem.getAttribute('data-id');
             (
                 async () => {
                     const response = await fetch('/basket/delete/', {
@@ -37,7 +36,7 @@
                     });
                     const answer = await response.json();
                     document.getElementById('count').innerText = answer.count;
-                    elem.parentElement.remove();
+                    document.getElementById(id).remove();
                 }
             )();
         })
