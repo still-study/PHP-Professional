@@ -3,8 +3,7 @@
 
 namespace app\models;
 
-
-use app\engine\Db;
+use app\engine\App;
 use app\interfaces\IModel;
 use app\models\entities\Model;
 
@@ -14,42 +13,42 @@ abstract class Repository implements IModel
     {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName} WHERE id = :id";
-        return Db::getInstance()->queryObject($sql, [":id" => $id], $this->getEntityClass());
+        return App::call()->db->queryObject($sql, [":id" => $id], $this->getEntityClass());
     }
 
     public function getLimit($page)
     {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName} LIMIT ?";
-        return Db::getInstance()->queryLimit($sql, $page);
+        return App::call()->db->queryLimit($sql, $page);
     }
 
     public function getAll()
     {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName}";
-        return Db::getInstance()->queryAll($sql);
+        return App::call()->db->queryAll($sql);
     }
 
     public function getOneWhere($name, $value)
     {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName} WHERE `{$name}` = :{$name}";
-        return Db::getInstance()->queryObject($sql, [":{$name}" => $value], $this->getEntityClass());
+        return App::call()->db->queryObject($sql, [":{$name}" => $value], $this->getEntityClass());
     }
 
     public function getCountWhere($name, $value)
     {
         $tableName = $this->getTableName();
         $sql = "SELECT count(id) as count FROM {$tableName} WHERE `{$name}` = :{$name}";
-        return Db::getInstance()->queryOne($sql, [":{$name}" => $value])['count'];
+        return App::call()->db->queryOne($sql, [":{$name}" => $value])['count'];
     }
 
-    public function getSumWhere($name)
+    public function getSumWhere($name, $value)
     {
         $tableName = $this->getTableName();
-        $sql = "SELECT SUM(price) FROM {$tableName} WHERE name = :name";
-        return Db::getInstance()->execute($sql, [":name" => $name]);
+        $sql = "SELECT SUM(price) as sum FROM {$tableName} WHERE `{$name}` = :{$name}";
+        return App::call()->db->queryOne($sql, [":{$name}" => $value])['sum'];
     }
 
     protected function insert(Model $entity)
@@ -70,17 +69,16 @@ abstract class Repository implements IModel
 
         $sql = "INSERT INTO {$tableName} ({$fields}) VALUES ({$val})";
 
-        Db::getInstance()->execute($sql, $params);
-        $entity->id = Db::getInstance()->lastInsertId();
+        App::call()->db->execute($sql, $params);
+        $entity->id = App::call()->db->lastInsertId();
 
     }
 
     protected function update(Model $entity)
     {
         $tableName = $this->getTableName();
-        $params = [":id" => $this->id];
+        $params = [":id" => $entity->id];
         $fields = [];
-
         foreach ($entity->props as $key => $value){
             if (!$value) continue;
             $params[":{$key}"] = $entity->{$key};
@@ -91,21 +89,23 @@ abstract class Repository implements IModel
         $val = implode(', ', $fields);
 
         $sql = "UPDATE {$tableName} SET {$val} WHERE id = :id";
-        Db::getInstance()->execute($sql, $params);
+        App::call()->db->execute($sql, $params);
     }
 
     public function delete(Model $entity)
     {
         $tableName = $this->getTableName();
         $sql = "DELETE FROM {$tableName} WHERE id = :id";
-        return Db::getInstance()->execute($sql, [":id" => $entity->id])->RowCount();
+        return App::call()->db->execute($sql, [":id" => $entity->id]);
     }
 
     public function save($entity)
     {
         if(is_null($entity->id)) {
             $this->insert($entity);
-        } else $this->update($entity);
+        } else {
+            $this->update($entity);
+        }
     }
 
     abstract protected function getEntityClass();

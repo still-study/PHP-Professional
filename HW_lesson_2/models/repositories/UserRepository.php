@@ -3,6 +3,8 @@
 
 namespace app\models\repositories;
 
+use app\engine\App;
+use app\engine\Session;
 use app\models\entities\User;
 use app\models\Repository;
 
@@ -13,15 +15,21 @@ class UserRepository extends Repository
         return $this->getName() == 'admin';
     }
 
+    public function classMenu()
+    {
+        if($this->isAdmin()) {
+            return 'menu_admin';
+        } else return 'menu';
+    }
+
     public function auth($login, $pass)
     {
-        $user = (new UserRepository())->getOneWhere('login', $login);
+        $user = App::call()->userRepository->getOneWhere('login', $login);
+        $session = new Session();
+
         if (password_verify($pass, $user->pass)) {
-            $_SESSION['login'] = $login;
-//            new Session('login', $login);
-            $_SESSION['id'] = $user->id;
-//            new Session('id', $user->id);
-//            var_dump($_SESSION);
+            $session->setSession('login', $login);
+            $session->setSession('id', $user->id);
             return true;
         } else {
             return false;

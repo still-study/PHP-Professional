@@ -1,20 +1,25 @@
 <h2>Корзина</h2>
+
 <hr>
 {% if basket is empty %}
     Корзина пуста
 {% else %}
 
-    {% for item in basket %}
-        <div id="{{ item.basket_id }}">
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
-            <p>{{ item.price }}</p>
+    <div class="basket_box">
+        {% for item in basket %}
+            <div class="product_basket" id="{{ item.basket_id }}">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.description }}</p>
+                <p>Цена: <span class="amount">{{ item.amount }}</span></p>
+                <p>Количество: <span class="quantity">{{ item.quantity }}</span></p>
 
-            <button data-id="{{ item.basket_id }}" class="delete">Удалить</button>
-            <hr>
-        </div>
+                <button data-id="{{ item.basket_id }}" class="delete">Удалить</button>
 
-    {% endfor %}
+            </div>
+
+        {% endfor %}
+    </div>
+    <a href="/order">Оформить заказ</a>
 
 {% endif %}
 
@@ -23,6 +28,7 @@
     buttons.forEach((elem) => {
         elem.addEventListener('click', () => {
             let id = elem.getAttribute('data-id');
+
             (
                 async () => {
                     const response = await fetch('/basket/delete/', {
@@ -35,8 +41,19 @@
                         })
                     });
                     const answer = await response.json();
+                    let price = +answer.price;
                     document.getElementById('count').innerText = answer.count;
-                    document.getElementById(id).remove();
+                    document.getElementById('sum').innerText = answer.sum;
+                    elem.parentNode.querySelector('.amount').innerText -= price;
+                    elem.parentNode.querySelector('.quantity').innerText = answer.quantity;
+                    if (answer.count < 1) {
+                        displaySumOff();
+                        document.getElementById('count').innerText = '0';
+                    }
+
+                    if (answer.quantity < 1) {
+                        document.getElementById(id).remove();
+                    }
                 }
             )();
         })

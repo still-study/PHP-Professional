@@ -3,16 +3,15 @@
 
 namespace app\controllers;
 
-
+use app\engine\App;
 use app\models\Feedback;
 use app\models\Product;
-use app\models\repositories\FeedbackRepository;
 
 class FeedbackController extends Controller
 {
     public function actionAll()
     {
-        $feedback = (new FeedbackRepository())->getAll();
+        $feedback = App::call()->feedbackRepository->getAll();
         echo $this->render('feedback', [
             'feedback' => $feedback
         ]);

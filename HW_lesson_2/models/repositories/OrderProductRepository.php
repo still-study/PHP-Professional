@@ -3,18 +3,19 @@
 
 namespace app\models\repositories;
 
-use app\models\entities\Product;
+
+use app\models\entities\OrderProduct;
 use app\models\Repository;
 
-class ProductRepository extends Repository
+class OrderProductRepository extends Repository
 {
     protected function getEntityClass()
     {
-        return Product::class;
+        return OrderProduct::class;
     }
 
     protected function getTableName()
     {
-        return "products";
+        return "order_product";
     }
 }

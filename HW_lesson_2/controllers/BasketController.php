@@ -3,9 +3,7 @@
 
 namespace app\controllers;
 
-
-use app\engine\Request;
-use app\models\repositories\BasketRepository;
+use app\engine\App;
 use app\models\entities\Basket;
 
 class BasketController extends Controller
@@ -13,37 +11,60 @@ class BasketController extends Controller
     public function actionIndex() {
 
         echo $this->render('basket', [
-            'basket' => (new BasketRepository())->getBasket(session_id())
+            'basket' => App::call()->basketRepository->getBasket(session_id())
         ]);
     }
 
     public function actionAdd() {
-        $id = (new Request())->getParams()['id'];
+        $id = App::call()->request->getParams()['id'];
 
-        $basket = new Basket(session_id(), $id);
+        $repos = App::call()->basketRepository;
+        $basketItem = $repos->getBasketItem('product_id', $id);
+        $quantity = $basketItem->quantity;
 
-        (new BasketRepository())->save($basket);
+        if (is_null($quantity)) {
+            $quantity = 1;
+            $basket = new Basket(session_id(), $id, $quantity); //это не компонент ситемы а сущность
+            $repos->save($basket);
+        } else {
+            $basketItem->quantity += 1;
+
+            $repos->save($basketItem);
+        }
+
         $response = [
-            'count' => (new BasketRepository())->getCountWhere('session_id', session_id())
+            'count' => App::call()->basketRepository->getTotalQuantity(session_id()),
+            'sum' => App::call()->basketRepository->getTotalSum(session_id())
         ];
+
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        var_dump($response);
     }
 
     public function actionDelete() {
-        $id = (new Request())->getParams()['id'];
-        $session = session_id();
-        $basket = (new BasketRepository())->getOne($id);
+        $id = App::call()->request->getParams()['id'];
+        $repos = App::call()->basketRepository;
+        $basketItem = $repos->getOne($id);
+        $quantity = (int)$basketItem->quantity;
+        $session_id = session_id();
         $error = 0;
-        if ($session == $basket->session_id) {
-            (new BasketRepository())->delete($basket);
+
+        if ($session_id == $basketItem->session_id) {
+            if ($quantity > 1) {
+                $basketItem->quantity -= 1;
+                $repos->save($basketItem);
+            } else {
+                $repos->delete($basketItem);
+            }
         } else {
             $error = 1;
         }
-        $response = [
-            'count' => (new BasketRepository())->getCountWhere('session_id', session_id()),
-            'error' => $error
 
+        $response = [
+            'count' => App::call()->basketRepository->getTotalQuantity(session_id()),
+            'sum' => App::call()->basketRepository->getTotalSum(session_id()),
+            'quantity' => App::call()->basketRepository->getOne($id)->quantity,
+            'price' => App::call()->basketRepository->getBasketPrice($id),
+            'error' => $error
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
