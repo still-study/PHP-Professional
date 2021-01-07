@@ -1,0 +1,46 @@
+{% for item in adminOrders %}
+    <div class="product_basket">
+        <h3>№ заказа: {{ item.id }}</h3>
+        <p>{{ item.first_name }}</p>
+        <p>{{ item.last_name }}</p>
+        <p>Адрес: {{ item.address }}</p>
+        <p>Тел.:{{ item.tel }}</p>
+        <button data-id="{{ item.id }}" class="show">Показать товары</button>
+    </div>
+    <div id="{{ item.id }}">
+
+    </div>
+
+{% endfor %}
+
+<script>
+    let buttons = document.querySelectorAll('.show');
+    buttons.forEach((elem) => {
+        elem.addEventListener('click', () => {
+            let id = elem.getAttribute('data-id');
+
+            (
+                async () => {
+                    const response = await fetch('/admin/orderProducts/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8'
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        })
+                    });
+                    const answer = await response.json();
+                    answer.orderProducts.forEach((elem) => {
+                        document.getElementById(id).innerHTML += `<div class="product_order">
+                                <p>Товар: ${elem.name}</p>
+                                <p>Описание: ${elem.description}</p>
+                                <p>Кол-во: ${elem.quantity}</p>
+                            </div> `;
+                    })
+                    elem.hidden = true;
+                }
+            )();
+        })
+    })
+</script>

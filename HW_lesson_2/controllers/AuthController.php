@@ -3,8 +3,7 @@
 
 namespace app\controllers;
 
-
-use app\engine\Request;
+use app\engine\App;
 use app\models\User;
 use app\engine\Session;
 
@@ -12,10 +11,11 @@ class AuthController extends Controller
 {
     public function actionLogin()
     {
-        $login = (new Request())->getParams()['login'];
-        $pass = (new Request())->getParams()['pass'];
-        if (User::auth($login, $pass)) {
-            header("location:" . (new Request())->getRefererPage());
+        $request = App::call()->request;
+        $login = $request->getParams()['login'];
+        $pass = $request->getParams()['pass'];
+        if (App::call()->userRepository->auth($login, $pass)) {
+            header("location:" . $request->getRefererPage());
         } else {
             die("Неверный логин пароль");
         }
@@ -24,9 +24,10 @@ class AuthController extends Controller
 
     public function actionLogout()
     {
-        session_destroy();
-//        (new Session())->sessionStop();
-        header("location:" . (new Request())->getRefererPage());
+        $session = new Session();
+        $session->sessionRegenerate();
+        $session->sessionStop();
+        header("location:" . App::call()->request->getRefererPage());
         die;
     }
 }

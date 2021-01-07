@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 15 2020 г., 15:13
+-- Время создания: Янв 07 2021 г., 21:12
 -- Версия сервера: 10.3.22-MariaDB
 -- Версия PHP: 7.4.5
 
@@ -30,17 +30,18 @@ SET time_zone = "+00:00";
 CREATE TABLE `basket` (
   `id` int(11) NOT NULL,
   `session_id` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `product_id` int(11) NOT NULL
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Дамп данных таблицы `basket`
 --
 
-INSERT INTO `basket` (`id`, `session_id`, `product_id`) VALUES
-(1, '111', 1),
-(2, '111', 2),
-(3, '222', 1);
+INSERT INTO `basket` (`id`, `session_id`, `product_id`, `quantity`) VALUES
+(1, '111', 1, 10),
+(2, '111', 2, 13),
+(3, '222', 1, 6);
 
 -- --------------------------------------------------------
 
@@ -64,6 +65,59 @@ INSERT INTO `feedback` (`id`, `userName`, `text`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL,
+  `first_name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tel` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `orders`
+--
+
+INSERT INTO `orders` (`id`, `first_name`, `last_name`, `address`, `tel`) VALUES
+(9, 'admin', 'admin', 'москва', '7777777'),
+(19, 'Иван', 'Иванов', 'Москва', '89090009999'),
+(20, 'Лёха', 'Крутой', 'Арамиль', '5555555555');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `order_product`
+--
+
+CREATE TABLE `order_product` (
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `price` decimal(22,2) NOT NULL,
+  `quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `order_product`
+--
+
+INSERT INTO `order_product` (`order_id`, `product_id`, `price`, `quantity`) VALUES
+(9, 1, '22.30', 1),
+(9, 2, '43.12', 1),
+(9, 3, '68.00', 2),
+(19, 1, '66.90', 3),
+(19, 2, '43.12', 1),
+(19, 3, '34.00', 1),
+(19, 53, '300.00', 1),
+(20, 1, '156.10', 7),
+(20, 2, '129.36', 3),
+(20, 3, '34.00', 1),
+(20, 53, '2100.00', 7);
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `products`
 --
 
@@ -71,7 +125,7 @@ CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price` int(11) NOT NULL
+  `price` decimal(22,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -79,10 +133,10 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
-(1, 'Чай', 'Цейлонский', 22),
-(2, 'Пицца', 'Пепперони', 43),
-(3, 'Одежда', 'Брендовая', 34),
-(53, 'Чай', 'Колумбийский', 300);
+(1, 'Чай', 'Цейлонский', '22.30'),
+(2, 'Пицца', 'Пепперони', '43.12'),
+(3, 'Одежда', 'Брендовая', '34.00'),
+(53, 'Чай', 'Колумбийский', '300.00');
 
 -- --------------------------------------------------------
 
@@ -121,6 +175,12 @@ ALTER TABLE `feedback`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `products`
 --
 ALTER TABLE `products`
@@ -140,13 +200,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `basket`
 --
 ALTER TABLE `basket`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=526;
 
 --
 -- AUTO_INCREMENT для таблицы `feedback`
 --
 ALTER TABLE `feedback`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT для таблицы `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT для таблицы `products`

@@ -26,38 +26,53 @@
 class Db
 {
     protected $tableName;
-    protected $whereParam = [];
+    protected $wheres = [];
 
-    public function table($tableName)
+    public function table($name)
     {
-        $this->tableName = $tableName;
+        $this->tableName = $name;
         return $this;
+    }
+
+    public function first($id)
+    {
+        $sql = "SELECT * from {$this->tableName} WHERE id = {$id}";
     }
 
     public function get()
     {
-        if (!empty($this->whereParam)) {
-
-            $where = "WHERE " . implode(" AND ", $this->whereParam);
-        } else $where = "";
-        $sql = "SELECT * FROM {$this->tableName} {$where}";
-        return $sql;
+        $sql = "SELECT * FROM {$this->tableName}";
+        if (!empty($this->wheres)) $sql .= " WHERE";
+        foreach ($this->wheres as $value) {
+            $sql .= $value['field'] . " = " . $value['value'];
+            if($value != end($this->wheres)) $sql .= " AND";
+        }
+        $this->wheres = [];
+        return $sql . "<br>";
     }
 
-    public function where($param1, $param2)
+    public function where($field, $value)
     {
-        $array = [$param1, $param2];
-        $value = implode(" = ", $array);
-        array_push($this->whereParam, $value);
+        $this->wheres[] = [
+            'field' => $field,
+            'value' => $value
+        ];
+
         return $this;
+    }
+
+    public function andWhere($field, $value)
+    {
+        return $this->where($field, $value);
     }
 
 }
 
 $db = new Db();
 
+var_dump($this);
 
 
 
-echo $db->table('product')->where('name', 'Alex')->where('session', 123)->where(id, 5)->get();
+echo $db->table('product')->where('name', 'Alex')->where('session', 123)->andWhere('id', 5)->get();
 //что должно вывести SELECT * FROM product WHERE name = Alex AND session = 123 AND id = 5

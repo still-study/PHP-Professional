@@ -1,14 +1,14 @@
 <?php
 
 
-namespace app\models;
-use app\interfaces\IModel;
+namespace app\models\entities;
 
-abstract class Model implements IModel
+
+abstract class Model
 {
     public function __set($name, $value)
     {
-        if (isset($this->$name)) {
+        if (isset($this->$name) || !isset($this->id)) {  // во время добавления товара id приходил null
             $this->props[$name] = true;
             $this->$name = $value;
         } else echo "Не существует поля: {$name}";
@@ -27,5 +27,4 @@ abstract class Model implements IModel
         return isset($this->$name);
     }
 
-    abstract protected static function getTableName();
 }

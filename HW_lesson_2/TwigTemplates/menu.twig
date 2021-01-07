@@ -1,3 +1,12 @@
+
+<div class="{{ classMenu }}">
+    <a href="/">Главная</a>
+    <a href="/product/catalog">Каталог</a>
+    <a href="/basket">Корзина (<span id="count">{{ count }}</span>)</a>
+    <a href="/feedback/all">Отзывы</a>
+{% if isAdmin %}
+    <a href="/admin/">***АДМИНКА***</a>
+{% endif %}
 {% if auth %}
     Добро пожаловать {{ userName }} <a href="/auth/logout/">[Выход]</a>
 {% else %}
@@ -7,9 +16,9 @@
         <input type="submit" name="submit" value="Войти">
     </form>
 {% endif %}
-<br>
-<a href="/">Главная</a>
-<a href="/product/catalog">Каталог</a>
-<a href="/basket">Корзина (<span id="count">{{ count }}</span>)</a>
-<a href="/feedback/all">Отзывы</a>
+</div>
+
+<p id="basket_sum">Товаров на сумму: <span id="sum">{{ sum }} </span> р.</p>
+
+
 <br>

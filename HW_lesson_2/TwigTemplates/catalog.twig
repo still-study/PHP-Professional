@@ -1,15 +1,18 @@
 <h2>Каталог</h2>
 <hr>
 
-{% for item in catalog %}
-    <h3><a href="/product/card/?id={{ item.id }}">{{ item.name }}</a></h3>
-    <p>{{ item.description }}</p>
-    <p>{{ item.price }}</p>
+<div class="product_box">
+    {% for item in catalog %}
+        <div class="product_card">
+            <h3><a href="/product/card/?id={{ item.id }}">{{ item.name }}</a></h3>
+            <p>{{ item.description }}</p>
+            <p>Цена: {{ item.price }} р.</p>
 
-    <button data-id="{{ item.id }}" class="buy">Купить</button>
-    <hr>
+            <button data-id="{{ item.id }}" data-price="{{ item.price }}" class="buy">Купить</button>
+        </div>
 
-{% endfor %}
+    {% endfor %}
+</div>
 
 <a href="/product/catalog/?page={{ page }}">Далее</a>
 
@@ -18,6 +21,7 @@
     buttons.forEach((elem) => {
         elem.addEventListener('click', () => {
             let id = elem.getAttribute('data-id');
+
             (
                 async () => {
                     const response = await fetch('/basket/add/', {
@@ -26,13 +30,14 @@
                             'Content-Type': 'application/json;charset=utf-8'
                         },
                         body: JSON.stringify({
-                            id: id
+
+                            id: id,
                         })
                     });
-                    // console.log(response.json())
                     const answer = await response.json();
-                    // console.log(response.json())
                     document.getElementById('count').innerText = answer.count;
+                    document.getElementById('sum').innerText = answer.sum;
+                    displaySumOn();
                 }
             )();
         })

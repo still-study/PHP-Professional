@@ -3,11 +3,8 @@
 
 namespace app\controllers;
 
-
-use app\engine\Render;
+use app\engine\App;
 use app\interfaces\IRenderer;
-use app\models\Basket;
-use app\models\User;
 
 class Controller
 {
@@ -24,6 +21,7 @@ class Controller
 
     public function runAction($action = null)
     {
+
         $this->action = $action ?: $this->defaultAction;
         $method = "action" . ucfirst($this->action);
         if (method_exists($this, $method)) {
@@ -38,9 +36,12 @@ class Controller
         if ($this->useLayout) {
             return $this->renderTemplate("layouts/{$this->layout}", [
                 'menu' => $this->renderTemplate('menu', [
-                    'userName' => User::getName(),
-                    'auth' => User::isAuth(),
-                    'count' => Basket::getCountWhere('session_id', session_id())
+                    'userName' => App::call()->userRepository->getName(),
+                    'auth' => App::call()->userRepository->isAuth(),
+                    'isAdmin' => App::call()->userRepository->isAdmin(),
+                    'classMenu' => App::call()->userRepository->classMenu(),
+                    'count' => App::call()->basketRepository->getTotalQuantity(session_id()),
+                    'sum' => App::call()->basketRepository->getTotalSum(session_id())
                 ]),
                 'content' => $this->renderTemplate($template, $params)
             ]);
