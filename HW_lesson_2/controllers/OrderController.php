@@ -43,8 +43,8 @@ class OrderController extends Controller
 
         $basket = App::call()->basketRepository->getBasket(session_id());
         foreach ($basket as $item) {
-            $orderProduct = (new OrderProduct($order->id, $item['prod_id'], $item['amount'], $item['quantity']));
-            (new OrderProductRepository())->save($orderProduct);
+            $orderProduct = (new OrderProduct($order->id, $item['prod_id'], $item['amount'], $item['quantity'])); //ПОЧЕМУ ТО НЕ ПОЛУЧИЛОСЬ ПЕРЕДЕЛАТЬ НА App::
+            (new OrderProductRepository())->save($orderProduct); //ПОЧЕМУ ТО НЕ ПОЛУЧИЛОСЬ ПЕРЕДЕЛАТЬ НА App::
         }
         header("location: /" );
         App::call()->session->sessionRegenerate();

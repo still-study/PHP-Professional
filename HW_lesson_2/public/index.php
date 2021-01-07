@@ -1,6 +1,6 @@
 <?php
 //    App::call()->session->sessionStart();
-session_start();
+session_start(); //ПОЧЕМУ ТО НЕ ПОЛУЧИЛОСЬ ПЕРЕДЕЛАТЬ НА App::
 
 use app\engine\App;
 
